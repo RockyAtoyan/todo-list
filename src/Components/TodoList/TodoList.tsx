@@ -22,6 +22,13 @@ const CreateForm:FC<{dispatchFetching:(...args:any) => void}> = ({dispatchFetchi
     </Formik>
 }
 
+export const dispatchFetching = (dispatch:(...args:any) => any) => {
+    dispatch(setFetchingAC(true))
+    setTimeout(() => {
+        dispatch(setFetchingAC(false))
+    },200)
+}
+
 export const TodoList = () => {
     const dispatch:ThunkDispatch<AppStateType, any, AnyAction> = useDispatch()
 
@@ -30,27 +37,41 @@ export const TodoList = () => {
 
     const items = Object.keys(sessionStorage).map(key => {
         return JSON.parse(sessionStorage.getItem(key) + '')
+    }).sort((a,b) => a.order - b.order).map(todo => {
+        let tasks:any[] = []
+        Object.keys(sessionStorage).forEach(key => {
+            if(JSON.parse(sessionStorage.getItem(key) + '').todoId === todo.id){
+                tasks.push(JSON.parse(sessionStorage.getItem(key) + ''))
+            }
+        })
+        const newTaskId = uniqid()
+        return todo && !todo.todoId && <div key={todo.id} className={'todo'}>
+            <h2>{todo.title}</h2>
+            <button onClick={() => {
+                dispatchFetching(dispatch)
+                sessionStorage.setItem(newTaskId,JSON.stringify({title:'123',todoId:todo.id,id:newTaskId}))
+            }}>Create Task</button>
+            {tasks.map(task => {
+                return <div key={task.id} className={'task'}>
+                    <h4>{task.title}</h4>
+                    <button onClick={() => {
+                        dispatchFetching(dispatch)
+                        sessionStorage.removeItem(task.id)
+                    }}>Delete</button>
+                </div>
+            })}
+            <button onClick={() => {
+                dispatchFetching(dispatch)
+                sessionStorage.removeItem(todo.id)
+            }}>Delete</button>
+        </div>
     })
 
     return <div className={'todo_list'}>
         {fetching && <Preloader />}
         <CreateForm dispatchFetching={() => {
-            dispatch(setFetchingAC(true))
-            setTimeout(() => {
-                dispatch(setFetchingAC(false))
-            },200)
+            dispatchFetching(dispatch)
         }} />
-        {items.sort((a,b) => a.order - b.order).map(todo => {
-            return todo && <div key={todo.id} className={'todo'}>
-                <h2>{todo.title}</h2>
-                <button onClick={() => {
-                    dispatch(setFetchingAC(true))
-                    setTimeout(() => {
-                        dispatch(setFetchingAC(false))
-                    },200)
-                    sessionStorage.removeItem(todo.id)
-                }}>Delete</button>
-            </div>
-        })}
+        {items}
     </div>
 }
