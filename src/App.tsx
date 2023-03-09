@@ -1,13 +1,18 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import './App.scss';
 import {TodoList} from "./Components/TodoList/TodoList";
 
 const App = () => {
-  return (
-    <div className="App">
-      <TodoList />
-    </div>
-  );
+
+    useEffect(() => {
+
+    },[])
+
+    return (
+        <div className="App">
+            <TodoList/>
+        </div>
+    );
 }
 
 export default App;

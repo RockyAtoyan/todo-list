@@ -12,7 +12,7 @@ const CreateForm:FC<{dispatchFetching:(...args:any) => void}> = ({dispatchFetchi
     return <Formik initialValues={{title:''}} onSubmit={({title},{resetForm}) => {
         dispatchFetching()
         const id = uniqid()
-        sessionStorage.setItem(id,JSON.stringify({id,title,order:1}))
+        localStorage.setItem(id,JSON.stringify({id,title,order:1,type:'todo'}))
         resetForm(undefined)
     }}>
         <Form>
@@ -35,13 +35,13 @@ export const TodoList = () => {
     const todos = useSelector((state:AppStateType) => state.todo.todos)
     const fetching = useSelector((state:AppStateType) => state.todo.fetching)
 
-    const items = Object.keys(sessionStorage).map(key => {
-        return JSON.parse(sessionStorage.getItem(key) + '')
-    }).sort((a,b) => a.order - b.order).map(todo => {
+    const items = Object.keys(localStorage).filter(key => {
+        return JSON.parse(localStorage.getItem(key) + '').type === 'todo'
+    }).map(key => JSON.parse(localStorage.getItem(key) + '')).sort((a,b) => a.order - b.order).map(todo => {
         let tasks:any[] = []
-        Object.keys(sessionStorage).forEach(key => {
-            if(JSON.parse(sessionStorage.getItem(key) + '').todoId === todo.id){
-                tasks.push(JSON.parse(sessionStorage.getItem(key) + ''))
+        Object.keys(localStorage).forEach(key => {
+            if(JSON.parse(localStorage.getItem(key) + '').todoId === todo.id){
+                tasks.push(JSON.parse(localStorage.getItem(key) + ''))
             }
         })
         const newTaskId = uniqid()
@@ -49,20 +49,20 @@ export const TodoList = () => {
             <h2>{todo.title}</h2>
             <button onClick={() => {
                 dispatchFetching(dispatch)
-                sessionStorage.setItem(newTaskId,JSON.stringify({title:'123',todoId:todo.id,id:newTaskId}))
+                localStorage.setItem(newTaskId,JSON.stringify({title:'123',todoId:todo.id,id:newTaskId}))
             }}>Create Task</button>
             {tasks.map(task => {
                 return <div key={task.id} className={'task'}>
                     <h4>{task.title}</h4>
                     <button onClick={() => {
                         dispatchFetching(dispatch)
-                        sessionStorage.removeItem(task.id)
+                        localStorage.removeItem(task.id)
                     }}>Delete</button>
                 </div>
             })}
             <button onClick={() => {
                 dispatchFetching(dispatch)
-                sessionStorage.removeItem(todo.id)
+                localStorage.removeItem(todo.id)
             }}>Delete</button>
         </div>
     })
