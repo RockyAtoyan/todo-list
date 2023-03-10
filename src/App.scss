@@ -1,7 +1,10 @@
-*{
+*,
+*::after,
+*::before{
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+  font-family: 'Oswald',sans-serif;
 }
 .preloader{
   position: fixed;
@@ -13,4 +16,48 @@
   align-items: center;
   justify-content: center;
   background: rgba(0,0,0,.5);
+}
+.categories{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  button{
+    cursor: pointer;
+    padding: 5px 20px;
+    border: 1px solid #000;
+    background: #fff;
+    border-radius: 10px;
+    transition: all .3s ease;
+    &:hover,&.active{
+      background: #000;
+      color: #fff;
+    }
+  }
+}
+body{
+  background: #4b0e4d;
+}
+.App{
+  width: 80%;
+  margin: 0 auto;
+  padding: 40px;
+  border-radius: 0 0 30px 30px;
+  background: #fff;
+}
+.todo{
+  &_list{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    .create_form{
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      input{
+        padding: 5px;
+        border-radius: 10px;
+        border: 1px solid #e5e5e5;
+      }
+    }
+  }
 }

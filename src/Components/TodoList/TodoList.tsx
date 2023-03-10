@@ -14,10 +14,10 @@ const CreateForm:FC<{dispatchFetching:(...args:any) => void,fetching:boolean,las
     return <Formik initialValues={{title:'',deadline:new Date().toLocaleDateString()}} onSubmit={({title,deadline},{resetForm}) => {
         dispatchFetching()
         const id = uniqid()
-        localStorage.setItem(id,JSON.stringify({id,title,deadline,pending:false,done:false,order:lastTodoOrder + 1,type:'todo'}))
+        if(title) localStorage.setItem(id,JSON.stringify({id,title,deadline:deadline.split('-').reverse().join(':') ,pending:false,done:false,order:lastTodoOrder + 1,type:'todo'}))
         resetForm(undefined)
     }}>
-        <Form>
+        <Form className={'create_form'}>
             <Field name={'title'} placeholder={'Create Todo'} />
             <Field name={'deadline'} type={'date'} placeholder={''} />
             <button disabled={fetching} type={'submit'}>Create</button>
@@ -56,7 +56,6 @@ export const TodoList = () => {
         <CreateForm lastTodoOrder={Array.from(items)[items.length - 1] ? Array.from(items)[items.length - 1].order : 0 } fetching={fetching} dispatchFetching={() => {
             dispatchFetching(dispatch)
         }} />
-        <Categories />
         {todos}
     </div>
 }

@@ -16,7 +16,7 @@ export type TodoType = {
     order: number
     done:boolean
     pending:boolean
-    deadline:Date
+    deadline:string
 }
 
 export type TaskType = {
@@ -25,7 +25,8 @@ export type TaskType = {
     order: number
     todoId: string
     done:boolean
-    deadline:Date
+    pending:boolean
+    deadline:string
 }
 
 export const todoReducer = (state = IS, action: ActionsType) => {

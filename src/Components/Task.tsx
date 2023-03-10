@@ -11,9 +11,9 @@ import {Checkbox} from "@mui/material";
 const UpdateTaskForm:FC<{task:TaskType,closeUpdateMode:(...args:any) => void}> = ({task,closeUpdateMode}) => {
     const dispatch:ThunkDispatch<AppStateType, any, AnyAction> = useDispatch()
 
-    return <Formik initialValues={{title:task.title,deadline:task.deadline}} onSubmit={({title,deadline}) => {
+    return <Formik initialValues={{title:task.title,deadline:task.deadline.split('.').reverse().join('-')}} onSubmit={({title,deadline}) => {
         dispatchFetching(dispatch)
-        localStorage.setItem(task.id,JSON.stringify({...task,title,deadline}))
+        localStorage.setItem(task.id,JSON.stringify({...task,title,deadline:String(deadline).split('-').reverse().join('.')}))
         closeUpdateMode()
     }}>
         <Form>
@@ -28,13 +28,21 @@ export const Task:FC<{task:TaskType}> = ({task}) => {
     const dispatch:ThunkDispatch<AppStateType, any, AnyAction> = useDispatch()
 
     const [updateMode,setUpdateMode] = useState(false)
+    const [pendingMode,setPendingMode] = useState(task.pending)
     const [doneMode,setDoneMode] = useState(task.done)
+
+    useEffect(() => {
+        dispatchFetching(dispatch)
+        localStorage.setItem(task.id,JSON.stringify({...task,pending:pendingMode}))
+    },[pendingMode])
+
+    useEffect(() => {
+        dispatchFetching(dispatch)
+        localStorage.setItem(task.id,JSON.stringify({...task,done:doneMode}))
+    },[doneMode])
 
     const dragTask = useSelector((state:AppStateType) => state.todo.dragTask)
 
-    useEffect(() => {
-        localStorage.setItem(task.id,JSON.stringify({...task,done:doneMode}))
-    },[doneMode])
 
     const dragStartHandler = function (event:any){
         dispatch(setDragTaskAC(task))
@@ -53,9 +61,12 @@ export const Task:FC<{task:TaskType}> = ({task}) => {
     }}>
         <h4>{task.title}</h4>
         <h6>Deadline : {String(task.deadline)}</h6>
-        <Checkbox checked={doneMode} onChange={() => {
+        <Checkbox checked={pendingMode} onChange={(event) => {
+            setPendingMode(prev => !prev)
+        }}/>
+        <Checkbox checked={doneMode} onChange={(event) => {
             setDoneMode(prev => !prev)
-        }} />
+        }}/>
         <button onClick={() => {
             setUpdateMode(prev => !prev)
         }}>Update</button>

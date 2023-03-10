@@ -9,14 +9,15 @@ import {FC, useEffect, useState} from "react";
 import {Task} from "./Task";
 import {Field, Form, Formik} from "formik";
 import {Checkbox} from "@mui/material";
+import {Categories} from "./Categories";
 
 
 const UpdateTodoForm:FC<{todo:TodoType,closeUpdateMode:(...args:any) => void}> = ({todo,closeUpdateMode}) => {
     const dispatch:ThunkDispatch<AppStateType, any, AnyAction> = useDispatch()
 
-    return <Formik initialValues={{title:todo.title,deadline:todo.deadline}} onSubmit={({title,deadline}) => {
+    return <Formik initialValues={{title:todo.title,deadline:todo.deadline.split('.').reverse().join('-')}} onSubmit={({title,deadline}) => {
         dispatchFetching(dispatch)
-        localStorage.setItem(todo.id,JSON.stringify({...todo,title,deadline}))
+        localStorage.setItem(todo.id,JSON.stringify({...todo,title,deadline:String(deadline).split('-').reverse().join('.')}))
         closeUpdateMode()
     }}>
         <Form>
@@ -29,8 +30,8 @@ const UpdateTodoForm:FC<{todo:TodoType,closeUpdateMode:(...args:any) => void}> =
 
 const CreateTaskForm:FC<{handleSubmit:(...args:any) => void}> = ({handleSubmit}) => {
 
-    return <Formik initialValues={{title:'',deadline:new Date().toLocaleDateString()}} onSubmit={({title,deadline}) => {
-        handleSubmit(title,deadline)
+    return <Formik initialValues={{title:'',deadline:new Date().toLocaleDateString().split('-').reverse().join(':')}} onSubmit={({title,deadline}) => {
+        handleSubmit(title,deadline.split('-').reverse().join('.'))
     }}>
         <Form>
             <Field name={'title'} placeholder={'new Title'} />
@@ -46,16 +47,7 @@ export const Todo:FC<{todo:TodoType,tasks:TaskType[]}> = ({todo,tasks}) => {
 
     const [updateMode,setUpdateMode] = useState(false)
     const [createMode,setCreateMode] = useState(false)
-    const [todoPendingMode,setTodoPendingMode] = useState(todo.pending)
-    const [todoDoneMode,setTodoDoneMode] = useState(todo.done)
-
-    useEffect(() => {
-        localStorage.setItem(todo.id,JSON.stringify({...todo,pending:todoPendingMode}))
-    },[todoPendingMode])
-
-    useEffect(() => {
-        localStorage.setItem(todo.id,JSON.stringify({...todo,done:todoDoneMode}))
-    },[todoDoneMode])
+    const [sortMode,setSortMode] = useState('all')
 
     const fetching = useSelector((state:AppStateType) => state.todo.fetching)
     const currentTodoId = useSelector((state:AppStateType) => state.todo.currentTodoId)
@@ -66,12 +58,6 @@ export const Todo:FC<{todo:TodoType,tasks:TaskType[]}> = ({todo,tasks}) => {
         <div key={todo.id} className={'todo'}>
             <h2>{todo.title}</h2>
             <h3>Deadline : {String(todo.deadline)}</h3>
-            <Checkbox checked={todoPendingMode} onChange={(event) => {
-                setTodoPendingMode(prev => !prev)
-            }}/>
-            <Checkbox checked={todoDoneMode} onChange={(event) => {
-                setTodoDoneMode(prev => !prev)
-            }}/>
             <button onClick={() => {
                 setUpdateMode(prev => !prev)
             }}>Update</button>
@@ -83,7 +69,7 @@ export const Todo:FC<{todo:TodoType,tasks:TaskType[]}> = ({todo,tasks}) => {
             }}>Create Task</button>
             {createMode && <CreateTaskForm handleSubmit={(title,deadline) => {
                 dispatchFetching(dispatch)
-                localStorage.setItem(newTaskId,JSON.stringify({id:newTaskId,todoId:todo.id,title,deadline,order:tasks.sort((a,b) => a.order - b.order)[tasks.length - 1] ? (tasks.sort((a,b) => a.order - b.order)[tasks.length - 1].order + 1) : 1}))
+                localStorage.setItem(newTaskId,JSON.stringify({id:newTaskId,todoId:todo.id,title,deadline,pending:false,done:false,order:tasks.sort((a,b) => a.order - b.order)[tasks.length - 1] ? (tasks.sort((a,b) => a.order - b.order)[tasks.length - 1].order + 1) : 1}))
                 setCreateMode(false)
                 dispatch(setCurrentTodoIdAC(todo.id))
             }} />}
@@ -91,7 +77,10 @@ export const Todo:FC<{todo:TodoType,tasks:TaskType[]}> = ({todo,tasks}) => {
                 if(currentTodoId === todo.id) return dispatch(setCurrentTodoIdAC(null))
                 dispatch(setCurrentTodoIdAC(todo.id))
             }}>{currentTodoId === todo.id ? 'Hide tasks' : 'Show tasks' }</button>
-            {currentTodoId === todo.id && tasks.sort((a,b) => b.order - a.order).map(task => {
+            {currentTodoId === todo.id && <Categories currentCategory={sortMode} setCurrentCategory={(category:string) => {
+                setSortMode(category)
+            }} />}
+            {currentTodoId === todo.id && tasks.sort((a,b) => b.order - a.order).filter(task => sortMode === 'all' ? true : (sortMode === 'pending' ? task.pending : task.done)).map(task => {
                 return <Task key={task.id} task={task} />
             })}
             <button disabled={fetching && todo.id === currentTodoId} onClick={() => {

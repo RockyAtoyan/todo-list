@@ -1,18 +1,13 @@
-import {ThunkDispatch} from "redux-thunk";
-import {AppStateType} from "./store/store";
-import {AnyAction} from "redux";
-import {useDispatch} from "react-redux";
-import {setCategoryTodoAC} from "./store/todoReducer";
+import {FC} from "react";
 
 const categories = ['all','done','pending']
 
-export const Categories = () => {
-    const dispatch:ThunkDispatch<AppStateType, any, AnyAction> = useDispatch()
+export const Categories:FC<{setCurrentCategory:(...args:any) => void,currentCategory:string}> = ({currentCategory,setCurrentCategory}) => {
 
     return <div className={'categories'}>
         {categories.map((category,index) => {
-            return <button key={index} onClick={() => {
-                dispatch(setCategoryTodoAC(category))
+            return <button className={currentCategory === category ? 'active' : ''} key={index} onClick={() => {
+                setCurrentCategory(category)
             }} >{category}</button>
         })}
     </div>
