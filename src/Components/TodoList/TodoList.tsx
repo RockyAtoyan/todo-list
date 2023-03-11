@@ -6,9 +6,8 @@ import {Field, Form, Formik} from "formik";
 import {FC} from "react";
 import {setFetchingAC} from "../store/todoReducer";
 import uniqid from 'uniqid'
-import {Preloader} from "../Preloader";
 import {Todo} from "../Todo";
-import {Categories} from "../Categories";
+import AddBoxIcon from '@mui/icons-material/AddBox';
 
 const CreateForm:FC<{dispatchFetching:(...args:any) => void,fetching:boolean,lastTodoOrder:number}> = ({dispatchFetching,fetching,lastTodoOrder}) => {
     return <Formik initialValues={{title:'',deadline:new Date().toLocaleDateString()}} onSubmit={({title,deadline},{resetForm}) => {
@@ -20,7 +19,9 @@ const CreateForm:FC<{dispatchFetching:(...args:any) => void,fetching:boolean,las
         <Form className={'create_form'}>
             <Field name={'title'} placeholder={'Create Todo'} />
             <Field name={'deadline'} type={'date'} placeholder={''} />
-            <button disabled={fetching} type={'submit'}>Create</button>
+            <button disabled={fetching} type={'submit'}>
+                <AddBoxIcon  />
+            </button>
         </Form>
     </Formik>
 }
@@ -52,10 +53,12 @@ export const TodoList = () => {
         return todo && <Todo key={todo.id} todo={todo} tasks={tasks} />
     })
 
-    return <div className={'todo_list'}>
+    return <section className={'todo_list'}>
         <CreateForm lastTodoOrder={Array.from(items)[items.length - 1] ? Array.from(items)[items.length - 1].order : 0 } fetching={fetching} dispatchFetching={() => {
             dispatchFetching(dispatch)
         }} />
-        {todos}
-    </div>
+        <div className={'todo_list__items'}>
+            {todos}
+        </div>
+    </section>
 }

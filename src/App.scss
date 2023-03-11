@@ -6,6 +6,13 @@
   box-sizing: border-box;
   font-family: 'Oswald',sans-serif;
 }
+*::-webkit-scrollbar{
+  width: 8px;
+}
+*::-webkit-scrollbar-thumb{
+  border-radius: 100px;
+  background: #389b7f;
+}
 .preloader{
   position: fixed;
   top: 0;
@@ -20,6 +27,7 @@
 .categories{
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   button{
     cursor: pointer;
@@ -35,20 +43,240 @@
   }
 }
 body{
-  background: #4b0e4d;
+  background: #000;
 }
 .App{
+  position: relative;
   width: 80%;
   margin: 0 auto;
   padding: 40px;
   border-radius: 0 0 30px 30px;
-  background: #fff;
+  background: rgba(255,255,255,.1);
+  backdrop-filter: blur(5px);
+}
+button{
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+}
+.header{
+  position: fixed;
+  z-index: 2;
+  width: 80%;
+  height: 50px;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px;
+  border-radius: 0 0 10px 10px;
+  display: flex;
+  justify-content: space-between;
+  animation: header-color-change 2s ease infinite alternate both;
+  overflow: hidden;
+  &_btn{
+    svg{
+      transition: all .3s ease;
+      &:hover{
+        color: #ff2000;
+      }
+    }
+  }
+  color: #fff;
+  svg{
+    color: #fff;
+  }
+  &_delete__page{
+    position: fixed;
+    z-index: 10;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 100%;
+    background: #142919;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .6s ease;
+    visibility: hidden;
+    font-size: 0;
+    h2{
+      cursor: pointer;
+    }
+    button{
+      position: absolute;
+      svg{
+        width: 0;
+        transition: all .3s ease;
+      }
+      top: 50%;
+      right: 20px;
+      transform: translate3d(0,-50%,0);
+    }
+    &.active{
+      width: 100%;
+      visibility: visible;
+      font-size: 14px;
+      svg{
+        width: 40px;
+      }
+    }
+  }
+}
+.main{
+  padding-top: 50px;
 }
 .todo{
+  position: relative;
+  transition: all .3s ease;
+  background: #c8d3f3;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 1px 1px 10px rgba(0,0,0,.4) inset;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: hidden;
+  perspective: 250px;
+  &_drag{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    cursor: grab;
+  }
+  &_content,&_delete__page,&_form__page{
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    transition: all 1s ease;
+  }
+  &_delete__page,&_form__page{
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #142919;
+    color: #fff;
+    transform: rotateY(180deg);
+  }
+  &_delete__page{
+    svg{
+      color: #fff;
+    }
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    h2{
+      cursor: pointer;
+    }
+    button{
+      cursor: pointer;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+  }
+  &_form__page{
+    .close{
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    form{
+      margin: 0 auto;
+    }
+  }
+  &_content{
+    transform: rotateY(0deg);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  &.active{
+    .todo_delete__page{
+      transform: rotateY(360deg);
+    }
+    .todo_content{
+      transform: rotateY(180deg);
+    }
+  }
+  &.update{
+    .todo_form__page{
+      transform: rotateY(360deg);
+    }
+    .todo_content{
+      transform: rotateY(180deg);
+    }
+  }
+  &_update__form{
+    background: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 80%;
+    button{
+      background: #fff;
+      border-radius: 10px;
+      border: 1px solid #000;
+      transition: all .3s ease;
+      &:hover{
+        background: #000;
+        color: #fff;
+      }
+    }
+  }
+  .tasks{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  &_create__form{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    svg{
+      transition: all .3s ease;
+      &:hover{
+        color: #b0aeb2;
+      }
+    }
+  }
+  &_btns{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    svg{
+      transition: all .3s ease;
+      &:hover{
+        color: #f3476d;
+      }
+    }
+  }
+  h2{
+    font-size: 30px;
+  }
+  h3{
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+  }
+  .task h6{
+    display: flex;
+    align-items: center;
+  }
   &_list{
     display: flex;
     flex-direction: column;
     gap: 15px;
+    &__items{
+      display: grid;
+      grid-template-columns: repeat(auto-fill,minmax(250px,1fr));
+      align-items: start;
+      gap: 20px;
+    }
     .create_form{
       display: flex;
       gap: 10px;
@@ -58,6 +286,186 @@ body{
         border-radius: 10px;
         border: 1px solid #e5e5e5;
       }
+      button{
+        cursor: pointer;
+        background: transparent;
+        border: 0;
+        &>*{
+          transition: all .3s ease;
+          &:hover{
+            color: #6a85f3;
+          }
+        }
+      }
     }
   }
 }
+.task{
+  position: relative;
+  width: 100%;
+  height: 100px;
+  transition: all .4s ease;
+  background: #fff;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 1px 1px 10px rgba(0,0,0,.4) inset;
+  overflow: hidden;
+  perspective: 250px;
+  &_btns{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    svg{
+      transition: all .3s ease;
+      &:hover{
+        color: #389b7f;
+      }
+    }
+    &>*:last-child svg:hover{
+      color:#ff2825;
+    }
+  }
+  form{
+    position: absolute;
+    z-index: 2;
+    top: -10px;
+    left: -10px;
+    padding: 10px;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    button{
+      background: #fff;
+      border-radius: 10px;
+      border: 1px solid #000;
+      transition: all .3s ease;
+      &:hover{
+        background: #000;
+        color: #fff;
+      }
+    }
+  }
+  &_content,&_delete__page{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    backface-visibility: hidden;
+    transition: all 1s ease;
+  }
+  &_content{
+    transform: rotateY(0deg);
+  }
+  &_delete__page{
+    top: 0;
+    left: 0;
+    background: #142919;
+    color: #fff;
+    svg{
+      color: #fff;
+    }
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotateY(180deg);
+    h2{
+      cursor: pointer;
+    }
+    button{
+      cursor: pointer;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+  }
+  &.active{
+    .task_content{
+      transform: rotateY(180deg);
+    }
+    .task_delete__page{
+      transform: rotateY(360deg);
+    }
+  }
+}
+
+
+.bg{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+}
+
+.hi_block{
+  position: fixed;
+  z-index: 10;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(5px);
+  top: -50%;
+  left: 50%;
+  transform: translate3d(-50%,-50%,0);
+  transition: all .6s ease;
+  transition-delay: .3s;
+  &.active{
+    top: 50%;
+  }
+  &>*{
+    display: flex;
+    flex-direction: column;
+    gap:10px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    animation-delay: 1s;
+    button{
+      background: #0b2921;
+      padding: 5px;
+      border-radius: 10px;
+      color: #fff;
+    }
+  }
+}
+
+@keyframes header-color-change {
+  0% {
+    background: #000;
+  }
+  100% {
+    background: #142919;
+  }
+}
+
+@keyframes header-color-text-change {
+  0% {
+    color: #fff;
+  }
+  100% {
+    color: #000;
+  }
+}
+
+@keyframes hi-animation {
+  0%{
+    transform: translateY(-100px);
+  }
+  25%{
+    transform: translateY(0px);
+  }
+  50%{
+    transform: translateY(-50px);
+  }
+  25%{
+    transform: translateY(0px);
+  }
+}
+
+
+
+

@@ -1,6 +1,6 @@
 import {FC} from "react";
 
-const categories = ['all','done','pending']
+const categories = ['all','done','active']
 
 export const Categories:FC<{setCurrentCategory:(...args:any) => void,currentCategory:string}> = ({currentCategory,setCurrentCategory}) => {
 

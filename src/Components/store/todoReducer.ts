@@ -7,7 +7,9 @@ const IS = {
     currentTodoId:null as string | null,
     category:'all',
     dragTask:null as TaskType | null,
-    dropTask:null as TaskType | null
+    dropTask:null as TaskType | null,
+    dragTodo:null as TodoType | null,
+    dropTodo:null as TodoType | null
 }
 
 export type TodoType = {
@@ -46,12 +48,15 @@ export const todoReducer = (state = IS, action: ActionsType) => {
         return {...state,category: action.caregory}
     } else if (action.type === "set-drag-task") {
         return {...state,dragTask: action.task}
+    } else if (action.type === "set-drag-todo") {
+        return {...state,dragTodo: action.todo}
     }
     return {...state}
 }
 
 //type ActionsType = setNewTodoACType | setNewTaskACType | deleteTodoACType | deleteTaskACType
-type ActionsType =  setFetchingACType | setCurrentTodoIdACType | setPendingTodoACType | setDoneTodoACType | setCategoryTodoACType | setDropTaskACType | setDragTaskACType
+type ActionsType =  setFetchingACType | setCurrentTodoIdACType | setPendingTodoACType | setDoneTodoACType | setCategoryTodoACType | setDropTaskACType | setDragTaskACType |
+    setDragTodoACType
 
 // type setNewTodoACType = {
 //     type: 'set-new-todo'
@@ -120,3 +125,9 @@ type setDragTaskACType = {
     task:TaskType
 }
 export const setDragTaskAC = (task:TaskType): setDragTaskACType => ({type:'set-drag-task',task})
+
+type setDragTodoACType = {
+    type: 'set-drag-todo'
+    todo:TodoType
+}
+export const setDragTodoAC = (todo:TodoType): setDragTodoACType => ({type:'set-drag-todo',todo})
