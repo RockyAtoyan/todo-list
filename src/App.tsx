@@ -3,7 +3,7 @@ import './App.scss';
 import {TodoList} from "./Components/TodoList/TodoList";
 import {Header} from "./Components/Header";
 import WAVES from 'vanta/dist/vanta.waves.min'
-import {HiBlock} from "./hiBlock";
+import {IntroBlock} from "./Components/IntroBlock";
 
 const App = () => {
 
@@ -27,9 +27,9 @@ const App = () => {
 
     return (
         <>
-            <HiBlock />
+            <IntroBlock />
             <div ref={bg} className={'bg'}></div>
-            <div className="App">
+            <div className="wrapper">
                 <Header />
                 <main className={'main'}>
                     <TodoList/>

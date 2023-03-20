@@ -1,7 +1,7 @@
 import React, {useEffect, useRef} from "react";
 
 
-export const HiBlock = () => {
+export const IntroBlock = () => {
     const hiBlock = useRef<HTMLDivElement>(null)
 
     useEffect(() => {

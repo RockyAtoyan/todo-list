@@ -13,7 +13,7 @@ const CreateForm:FC<{dispatchFetching:(...args:any) => void,fetching:boolean,las
     return <Formik initialValues={{title:'',deadline:new Date().toLocaleDateString()}} onSubmit={({title,deadline},{resetForm}) => {
         dispatchFetching()
         const id = uniqid()
-        if(title) localStorage.setItem(id,JSON.stringify({id,title,deadline:deadline.split('-').reverse().join(':') ,pending:false,done:false,order:lastTodoOrder + 1,type:'todo'}))
+        if(title) localStorage.setItem(id,JSON.stringify({id,title,deadline:deadline.split('-').reverse().join(':') ,pending:false,done:false,order:lastTodoOrder + 1,bgColor:['#c8d3f3','#bbf3b5','#f3eac6'][Math.floor(Math.random()*3)],type:'todo'}))
         resetForm(undefined)
     }}>
         <Form className={'create_form'}>
@@ -43,7 +43,7 @@ export const TodoList = () => {
         return JSON.parse(localStorage.getItem(key) + '').type === 'todo'
     }).map(key => JSON.parse(localStorage.getItem(key) + '')).sort((a,b) => a.order - b.order)
 
-    const todos = items.filter(todo => category === 'pending' ? todo.pending : (category === 'done' ? todo.done : true)).map(todo => {
+    const todos = items.filter(todo => category === 'pending' ? todo.pending : (category === 'done' ? todo.done : true)).map((todo) => {
         let tasks:any[] = []
         Object.keys(localStorage).forEach(key => {
             if(JSON.parse(localStorage.getItem(key) + '').todoId === todo.id){

@@ -45,7 +45,7 @@
 body{
   background: #000;
 }
-.App{
+.wrapper{
   position: relative;
   width: 80%;
   margin: 0 auto;
@@ -466,6 +466,17 @@ button{
   }
 }
 
-
-
-
+@media(max-width: 500px){
+  .wrapper{
+    width: 95%;
+  }
+  .todo_list__items{
+    grid-template-columns: 1fr;
+  }
+  .header_delete__page h2{
+    font-size: 12px;
+  }
+  .header_delete__page.active svg{
+    width: 20px;
+  }
+}

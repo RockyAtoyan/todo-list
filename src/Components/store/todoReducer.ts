@@ -19,6 +19,7 @@ export type TodoType = {
     done:boolean
     pending:boolean
     deadline:string
+    bgColor:string
 }
 
 export type TaskType = {

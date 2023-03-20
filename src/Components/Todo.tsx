@@ -33,8 +33,8 @@ const UpdateTodoForm:FC<{todo:TodoType,closeUpdateMode:(...args:any) => void}> =
         closeUpdateMode()
     }}>
         <Form className={'todo_update__form'}>
-            <Field name={'title'} placeholder={'new Title'} />
-            <Field name={'deadline'} type={'date'} placeholder={'new DeadLine'} />
+            <Field name={'title'} placeholder={'New title'} />
+            <Field name={'deadline'} type={'date'} placeholder={'New deadLine'} />
             <button type={'submit'}>Update</button>
         </Form>
     </Formik>
@@ -46,8 +46,8 @@ const CreateTaskForm:FC<{handleSubmit:(...args:any) => void}> = ({handleSubmit})
         handleSubmit(title,deadline.split('-').reverse().join('.'))
     }}>
         <Form className={'todo_create__form'}>
-            <Field name={'title'} placeholder={'new Title'} />
-            <Field name={'deadline'} type={'date'} placeholder={'new DeadLine'} />
+            <Field name={'title'} placeholder={'Create task'} />
+            <Field name={'deadline'} type={'date'} placeholder={'DeadLine'} />
             <button type={'submit'}>
                 <AddIcon />
             </button>
@@ -67,9 +67,6 @@ export const Todo:FC<{todo:TodoType,tasks:TaskType[]}> = ({todo,tasks}) => {
     const [watchingMode,setWatchingMode] = useState(tasks.length !== 0)
     const [bg,setBg] = useState('')
 
-    useEffect(() => {
-        setBg(['#c8d3f3','#bbf3b5','#f3eac6'][Math.floor(Math.random()*3)])
-    },[])
 
     const fetching = useSelector((state:AppStateType) => state.todo.fetching)
     const currentTodoId = useSelector((state:AppStateType) => state.todo.currentTodoId)
@@ -91,7 +88,7 @@ export const Todo:FC<{todo:TodoType,tasks:TaskType[]}> = ({todo,tasks}) => {
         }
     }
 
-    return <div className={'todo' + `${updateMode ? ' update' : ''}`} ref={currentTodo} style={{backgroundColor:bg}}>
+    return <div className={'todo' + `${updateMode ? ' update' : ''}`} ref={currentTodo} style={{backgroundColor:todo.bgColor}}>
             <div className="todo_content" >
                 <div className="todo_drag" draggable={true} onDragStart={dragStartHandler} onDrop={dropHandler} onDragOver={(e) => {
                     e.preventDefault()
