@@ -75,7 +75,6 @@ export const Todo:FC<{todo:TodoType,tasks:TaskType[]}> = ({todo,tasks}) => {
     const newTaskId = uniqid()
 
     const dragStartHandler = function (event:any){
-        console.log(event.currentTarget)
         if(event.currentTarget.className !== 'task') dispatch(setDragTodoAC(todo))
     }
 

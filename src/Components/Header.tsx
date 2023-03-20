@@ -22,7 +22,6 @@ export const Header = () => {
     return <header className={'header'}>
         <h2>ToDo List</h2>
         <button onClick={(event) => {
-            console.log(event)
             setCoordinates([event.clientX,event.clientY])
             deletePage.current?.classList.add('active')
         }} className={'header_btn btn'}>
